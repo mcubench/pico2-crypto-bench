@@ -46,3 +46,26 @@
   `4352119c5073f3306ffbbe0ac7da7da66ece60f07de4c5e74bfa3f41a95ee587`;
   flashed UF2 SHA-256
   `3455352167cdc106105c84a39c66bcbd307c63afd31d9967dd79786f6b79894c`.
+
+## 2026-09-23 — Validate RISC-V hardware cycle
+
+- Step/experiment: `hardware-cycle-riscv`
+- Change: Rebuilt both architectures from clean commit `a9cb729730e3`, flashed
+  the Hazard3 RISC-V `crypto_shootout` UF2 with verification, captured its full
+  bounded USB serial run, and repeated the repository-local environment check.
+- Validation: `./tools/cycle riscv` passed. Both architecture builds were clean;
+  picotool load and flash verification returned success; the serial monitor saw
+  the source-matched RISC-V banner, no failure marker, `done.`, and
+  `MONITOR:PASS`. A final `./tools/doctor` returned `DOCTOR:PASS`, including the
+  live Pico USB serial device.
+- Result: The same board ID `E0E14525E64AF6ED` ran the Hazard3 image at 150 MHz
+  through all reported crypto operations. The repository can now compile both
+  ISAs, upload either validated image, and enforce a finite hardware test.
+- Decision: Setup is complete. Leave the last validated RISC-V shootout running;
+  future platform-independent changes should use `./tools/cycle arm` and
+  `./tools/cycle riscv` as required by `AGENTS.md`.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: `logs/riscv-shootout-20260923T172102Z.log` SHA-256
+  `3632c3b36c3faaa2c55747fc575716c9a0867f581bb7f9cb91361369c6df9c30`;
+  flashed UF2 SHA-256
+  `1d349975689376489e2d8819b91eefb2775495ff90d30a66748f4e941383b56d`.
