@@ -130,3 +130,23 @@
   `32261cd513fa36a2c6ce178029772e810a01b3a3187909b141d02bc41a5fe3bb`;
   RISC-V sweep UF2 SHA-256
   `354d2ecc318efd9ca936f1bcc8053eff01ae611597b4e6faa7fc02dd22d9ee1a`.
+
+## 2026-09-23 — Retry interrupted suite on flash resume
+
+- Step/experiment: `resume-current-suite`
+- Change: Changed flash-only recovery to restart the journal's recorded suite
+  from its first frequency rather than treating a pre-attempt record as proof
+  that the suite completed. Matching watchdog recovery still advances past the
+  positively identified hung suite. Updated the recovery prompt and bumped the
+  firmware to v2.6.4.
+- Validation: `git diff --check`, `./tools/build arm`, and
+  `./tools/build riscv` passed with warnings treated as errors.
+- Result: In the supplied log, suites 5–8 had in fact run while USB serial
+  output was absent, as shown by saved results of 558, 564, 460, and 460 MHz.
+  The new policy nevertheless ensures that a flash-only record for suite 8
+  resumes at suite 8, not suite 9.
+- Decision: Commit the semantic fix, rebuild from clean source, and prepare the
+  RISC-V image for a manual interruption/reinsertion check.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: user-supplied serial log at attachment path; build outputs
+  under ignored `build/`.
