@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -u
+source "$(dirname -- "$0")/common.sh"
+
+failures=0
+check() {
+    local label="$1" value
+    shift
+    value="$("$@" 2>/dev/null)" || value=""
+    if [[ -n "${value}" ]]; then
+        printf 'PASS %-18s %s\n' "${label}" "${value}"
+    else
+        printf 'FAIL %-18s missing\n' "${label}"
+        failures=$((failures + 1))
+    fi
+}
+
+check "Pico SDK" find_sdk
+check "CMake" find_cmake
+check "Ninja" find_ninja
+check "ARM compiler" find_toolchain arm-none-eabi
+check "RISC-V compiler" find_toolchain riscv32-pico-elf
+check "picotool" find_picotool
+check "Python" command -v python3
+python3 -c 'import serial; print(serial.__version__)' >/dev/null 2>&1 || {
+    printf 'FAIL %-18s missing\n' pyserial
+    failures=$((failures + 1))
+}
+if compgen -G '/dev/serial/by-id/usb-Raspberry_Pi_Pico*' >/dev/null; then
+    printf 'PASS %-18s %s\n' "Pico USB serial" /dev/serial/by-id/usb-Raspberry_Pi_Pico*
+else
+    printf 'FAIL %-18s missing\n' "Pico USB serial"
+    failures=$((failures + 1))
+fi
+
+if ((failures)); then
+    printf 'DOCTOR:FAIL count=%d\n' "${failures}"
+    exit 1
+fi
+printf 'DOCTOR:PASS\n'
+

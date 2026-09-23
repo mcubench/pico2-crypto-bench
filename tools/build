@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(dirname -- "$0")/common.sh"
+
+arch="${1:-}"
+case "${arch}" in
+    arm) platform=rp2350-arm-s; triple=arm-none-eabi ;;
+    riscv) platform=rp2350-riscv; triple=riscv32-pico-elf ;;
+    *) die "usage: tools/build arm|riscv" ;;
+esac
+
+sdk="$(find_sdk)" || die "Pico SDK not found"
+cmake_bin="$(find_cmake)" || die "CMake not found"
+ninja_bin="$(find_ninja)" || die "Ninja not found"
+toolchain="$(find_toolchain "${triple}")" || die "${triple} toolchain not found"
+picotool_bin="$(find_picotool)" || die "picotool not found"
+source_id="$(source_identity)"
+build_dir="${PROJECT_ROOT}/build/${arch}"
+
+export PATH="$(dirname "${picotool_bin}"):${PATH}"
+printf 'CONFIG arch=%s platform=%s board=pico2 flash_bytes=4194304 source_id=%s\n' \
+    "${arch}" "${platform}" "${source_id}"
+cmake_options=(
+    -DCMAKE_MAKE_PROGRAM="${ninja_bin}"
+    -DCMAKE_BUILD_TYPE=Release
+    -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+    -DPICO_BOARD=pico2
+    -DPICO_PLATFORM="${platform}"
+    -DPICO_TOOLCHAIN_PATH="${toolchain}"
+    -DBENCH_SOURCE_ID="${source_id}"
+)
+if [[ "${arch}" == arm ]]; then
+    # micro-ecc's UMAAL path is not reliable on Cortex-M33 (documented in README).
+    cmake_options+=(-DUECC_NO_UMAAL=1)
+fi
+PICO_SDK_PATH="${sdk}" "${cmake_bin}" -S "${PROJECT_ROOT}/src" -B "${build_dir}" -G Ninja \
+    "${cmake_options[@]}"
+"${cmake_bin}" --build "${build_dir}"
+
+for image in crypto_shootout crypto_sweep; do
+    [[ -f "${build_dir}/${image}.uf2" ]] || die "missing ${build_dir}/${image}.uf2"
+done
+printf 'BUILD:PASS arch=%s shootout=%s sweep=%s\n' "${arch}" \
+    "${build_dir}/crypto_shootout.uf2" "${build_dir}/crypto_sweep.uf2"

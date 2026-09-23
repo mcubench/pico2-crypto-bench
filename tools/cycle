@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(dirname -- "$0")/common.sh"
+
+arch="${1:-}"
+case "${arch}" in arm|riscv) ;; *) die "usage: tools/cycle arm|riscv [shootout]" ;; esac
+target="${2:-shootout}"
+[[ "${target}" == shootout ]] || die "automated cycle supports shootout; use tools/flash for the interactive sweep"
+
+"${PROJECT_ROOT}/tools/build" arm
+"${PROJECT_ROOT}/tools/build" riscv
+"${PROJECT_ROOT}/tools/flash" "${arch}" "${target}"
+mkdir -p "${PROJECT_ROOT}/logs"
+timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+log="${PROJECT_ROOT}/logs/${arch}-${target}-${timestamp}.log"
+"${PROJECT_ROOT}/tools/monitor" --seconds "${MONITOR_SECONDS:-180}" --expect "done." | tee "${log}"
+sha256sum "${PROJECT_ROOT}/build/${arch}/crypto_shootout.uf2" "${log}"
+printf 'CYCLE:PASS arch=%s target=%s log=%s\n' "${arch}" "${target}" "${log}"
+

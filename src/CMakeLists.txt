@@ -4,6 +4,10 @@ if (NOT PICO_BOARD)
     set(PICO_BOARD pico2)
 endif()
 
+# Raspberry Pi Pico 2 has 4 MiB of QSPI flash.  Declare this explicitly because
+# crypto_sweep journals progress in the final sector.
+set(PICO_FLASH_SIZE_BYTES 4194304)
+
 set(PICO_MBEDTLS_CONFIG_FILE "bench_mbedtls_config.h")
 
 include(pico_sdk_import.cmake)
@@ -19,7 +23,10 @@ string(TIMESTAMP BUILD_STAMP "%Y%m%d-%H%M%S" UTC)
 string(MD5 _bid "${BUILD_STAMP}-${PICO_PLATFORM}-${CMAKE_C_COMPILER}")
 string(SUBSTRING "${_bid}" 0 8 BUILD_ID)
 
-set(BUILD_OPTIONS "NIST_OPTIM=1")
+if (NOT DEFINED BENCH_SOURCE_ID)
+    set(BENCH_SOURCE_ID "unknown")
+endif()
+set(BUILD_OPTIONS "source=${BENCH_SOURCE_ID} NIST_OPTIM=1")
 if (BENCH_NO_MBEDTLS_ASM)
     string(APPEND BUILD_OPTIONS " MBEDTLS_ASM=0")
 else()

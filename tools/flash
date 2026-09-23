@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(dirname -- "$0")/common.sh"
+
+arch="${1:-}"
+case "${arch}" in arm|riscv) ;; *) die "usage: tools/flash arm|riscv [shootout|sweep]" ;; esac
+target="$(target_name "${2:-shootout}")"
+uf2="${PROJECT_ROOT}/build/${arch}/${target}.uf2"
+[[ -f "${uf2}" ]] || die "missing ${uf2}; run tools/build ${arch} first"
+picotool_bin="$(find_picotool)" || die "picotool not found"
+
+"${picotool_bin}" load -f -u -v -x "${uf2}"
+printf 'FLASH:PASS arch=%s target=%s source_id=%s\n' \
+    "${arch}" "${target}" "$(source_identity)"
+

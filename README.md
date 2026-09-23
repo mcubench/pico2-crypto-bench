@@ -77,6 +77,22 @@ the flash RXDELAY strategy, and the start and ceiling clocks.
 
 ## Quick start
 
+For a repeatable local build/flash/test cycle with a Pico 2 connected over USB:
+
+```bash
+./tools/doctor
+./tools/build arm
+./tools/build riscv
+./tools/cycle arm       # rebuilds both, flashes crypto_shootout, captures a finite log
+./tools/cycle riscv
+```
+
+The wrappers discover the SDK and toolchains installed under `~/.pico-sdk`, use
+separate build directories for both ISAs, stamp the Git source identity into the
+firmware banner, and never erase flash or touch OTP. `tools/flash` defaults to
+the non-interactive `shootout` image; pass `sweep` explicitly to flash the
+interactive overclock sweep. Logs are archived under `logs/`.
+
 1. Hold **BOOTSEL**, plug the board in, drag a `.uf2` onto the `RP2350` drive. (start with `shootout_arm_v2.5.1.uf2`).
 2. Open the USB serial port at any baud rate. Output is mirrored on UART0
    (GPIO 0/1, 115200 8N1), which survives USB re-enumeration after a reset.
