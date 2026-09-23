@@ -812,6 +812,31 @@ static int      g_rxd_mode;
 static uint32_t g_rxd_force;
 static uint32_t g_rxd_boot;
 
+static bool journal_config_valid(const progress_t *p)
+{
+    if (p->vsel >= N_VOLTS || p->ladder_mode > 1 || p->rxd_mode > RXD_FORCE)
+        return false;
+    if (p->rxd_mode == RXD_FORCE && p->rxd_force > 7)
+        return false;
+    if (p->start_mhz < 18 || p->start_mhz > 600)
+        return false;
+    return p->max_mhz >= p->start_mhz && p->max_mhz <= 800;
+}
+
+/* Configuration fields are invariants of a run, but g_prog lives in RAM and
+ * is zeroed by every reset. Reassert all of them before a record can be saved,
+ * including after watchdog recovery. */
+static void journal_config_set(progress_t *p, int vsel, int ladder_mode,
+                               uint32_t start_mhz, uint32_t max_mhz)
+{
+    p->vsel        = (uint8_t)vsel;
+    p->ladder_mode = (uint8_t)ladder_mode;
+    p->rxd_mode    = (uint8_t)g_rxd_mode;
+    p->rxd_force   = (uint16_t)g_rxd_force;
+    p->start_mhz   = (uint16_t)start_mhz;
+    p->max_mhz     = (uint16_t)max_mhz;
+}
+
 /* Auto: one extra delay cycle per ~50 MHz of SCK, which is the usual shape of
  * the requirement. Clamped to the 3-bit field. */
 static uint32_t rxd_auto_for(uint32_t sck_khz)
@@ -1188,9 +1213,12 @@ int main(void)
 
     bool resuming = false;          /* watchdog reset: state from scratch regs */
     bool resuming_flash = false;    /* power cycle: state from the flash journal */
+    bool resuming_config = false;   /* watchdog state matched a valid journal */
     int  hung_suite = -1;
     uint32_t hung_mhz = 0, max_mhz = SWEEP_MAX_KHZ / 1000u, start_mhz = SWEEP_START_KHZ / 1000u;
     int vsel = -1, ladder_mode = 0;
+    bool have_journal = progress_load(&g_prog);
+    bool journal_ok = have_journal && journal_config_valid(&g_prog);
 
     if (watchdog_caused_reboot() && watchdog_hw->scratch[SC_MAGIC] == MAGIC) {
         uint32_t w = watchdog_hw->scratch[SC_POS];
@@ -1199,6 +1227,22 @@ int main(void)
         max_mhz    = (w >> 10) & 0x3ffu;
         vsel       = (int)((w >> 20) & 0xfu);
         hung_suite = (int)((w >> 24) & 0xfu);
+
+        /* run_suite writes the journal immediately after SC_POS and before it
+         * touches the clock, so an exact match is the same attempted step. */
+        if (journal_ok && !g_prog.complete && g_prog.suite == hung_suite &&
+            g_prog.cur_mhz == hung_mhz && g_prog.vsel == vsel &&
+            g_prog.max_mhz == max_mhz) {
+            start_mhz   = g_prog.start_mhz;
+            ladder_mode = g_prog.ladder_mode;
+            g_rxd_mode  = g_prog.rxd_mode;
+            g_rxd_force = g_prog.rxd_force;
+            for (int i = 0; i < MAX_SUITES && i < PROGRESS_MAX_SUITES; i++) {
+                g_result[i] = g_prog.result[i];
+                g_result_approx[i] = false;
+            }
+            resuming_config = true;
+        }
     }
 
     bench_print_build_info("crypto_sweep");
@@ -1214,9 +1258,13 @@ int main(void)
                (hung_suite >= 0 && hung_suite < MAX_SUITES) ? k_suites[hung_suite].name : "?",
                (unsigned long)hung_mhz);
         printf(" *** That suite ends there; continuing with the next one.\n");
-        results_load_from_scratch();
-        printf(" *** RXDELAY/ladder settings revert to defaults on resume.\n");
-    } else if (progress_load(&g_prog) && !g_prog.complete &&
+        if (resuming_config) {
+            printf(" *** Voltage, range, ladder, and RXDELAY restored from flash journal.\n");
+        } else {
+            results_load_from_scratch();
+            printf(" *** No matching valid journal; RXDELAY/ladder use safe defaults.\n");
+        }
+    } else if (have_journal && journal_ok && !g_prog.complete &&
                g_prog.suite < MAX_SUITES) {
         /* Survived a power cycle. Everything below the recorded point is known
          * good, so offer to carry on rather than repeat it. */
@@ -1253,6 +1301,10 @@ int main(void)
             progress_erase();
             memset(&g_prog, 0, sizeof(g_prog));
         }
+    } else if (have_journal && !g_prog.complete && g_prog.suite < MAX_SUITES) {
+        printf("\n *** Saved sweep has invalid settings (%u-%u MHz, voltage index %u).\n",
+               g_prog.start_mhz, g_prog.max_mhz, g_prog.vsel);
+        printf(" *** Refusing unsafe resume; starting a new run.\n");
     }
 
     if (!resuming && !resuming_flash) {
@@ -1284,17 +1336,12 @@ int main(void)
         for (int i = 0; i < MAX_SUITES; i++) result_set(i, 0);
 
         memset(&g_prog, 0, sizeof(g_prog));
-        g_prog.vsel        = (uint8_t)vsel;
-        g_prog.ladder_mode = (uint8_t)ladder_mode;
-        g_prog.rxd_mode    = (uint8_t)g_rxd_mode;
-        g_prog.rxd_force   = (uint16_t)g_rxd_force;
-        g_prog.start_mhz   = (uint16_t)start_mhz;
-        g_prog.max_mhz     = (uint16_t)max_mhz;
         progress_erase();
     }
     if (vsel < 0 || vsel >= N_VOLTS) vsel = 0;
     if (max_mhz < start_mhz) max_mhz = start_mhz;
     g_vsel = vsel;
+    journal_config_set(&g_prog, vsel, ladder_mode, start_mhz, max_mhz);
 
     /* Order matters when undervolting: get the clock down first, then lower the
      * voltage. Doing it the other way round runs 150 MHz at 0.85 V, which will

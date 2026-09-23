@@ -69,3 +69,23 @@
   `3632c3b36c3faaa2c55747fc575716c9a0867f581bb7f9cb91361369c6df9c30`;
   flashed UF2 SHA-256
   `1d349975689376489e2d8819b91eefb2775495ff90d30a66748f4e941383b56d`.
+
+## 2026-09-23 — Preserve sweep configuration across reset
+
+- Step/experiment: `resume-journal-config`
+- Change: Fixed watchdog recovery to reload a matching valid flash journal,
+  restore voltage/range/ladder/RXDELAY and exact results, and repopulate every
+  invariant journal field before later saves. Added strict validation so legacy
+  records with values such as `0-0 MHz` are refused instead of resuming at the
+  voltage-table default. Bumped firmware to v2.6.3.
+- Validation: `git diff --check`, `./tools/build arm`, and
+  `./tools/build riscv` passed with warnings treated as errors; both shootout
+  and sweep UF2 targets linked on each ISA.
+- Result: The zero-overwrite path is removed at both causes: `g_prog` is restored
+  after a matching watchdog reset and configuration fields are unconditionally
+  reasserted before any subsequent suite can journal a record.
+- Decision: Commit the source fix, then reproduce a power-cycle-style resume on
+  hardware at the stock 1.10 V / 150 MHz operating point.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: Build outputs under ignored `build/`; hardware validation not
+  yet performed for this step.
