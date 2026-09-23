@@ -24,3 +24,25 @@
   RISC-V shootout `b349a67ccac9818f89b244b42d40b65c05461d1771dba0aa00ef82f748940078`,
   RISC-V sweep `788cec894082c779bc764cdff1d79c30fec1c1dd6ed8762007e4219cb54de6d9`.
 
+## 2026-09-23 — Validate ARM hardware cycle
+
+- Step/experiment: `hardware-cycle-arm`
+- Change: Rebuilt both architectures from clean commit `9b8db5b06d39`, flashed
+  the ARM `crypto_shootout` UF2 with verification, and captured a bounded USB
+  serial run through its completion marker.
+- Validation: `./tools/cycle arm` passed. Both architecture builds were clean;
+  picotool load and flash verification returned success; the serial monitor saw
+  the source-matched banner, no failure marker, `done.`, and `MONITOR:PASS`.
+- Result: Measured hardware identity was board ID `E0E14525E64AF6ED`, RP2350
+  chip version 3, ROM version 4, ARM Cortex-M33 at 150 MHz. Every reported
+  shootout operation completed, including ML-KEM, ML-DSA, TRNG, and RSA.
+  Runtime reported VSYS as 9.897 V; this is not physically plausible and is
+  consistent with the repository's documented unusable ADC, so it is not a
+  valid supply measurement.
+- Decision: ARM compile/upload/test is operational. Record the step, then flash
+  and validate the RISC-V build using the same source commit and monitor gate.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: `logs/arm-shootout-20260923T171833Z.log` SHA-256
+  `4352119c5073f3306ffbbe0ac7da7da66ece60f07de4c5e74bfa3f41a95ee587`;
+  flashed UF2 SHA-256
+  `3455352167cdc106105c84a39c66bcbd307c63afd31d9967dd79786f6b79894c`.
