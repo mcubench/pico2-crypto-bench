@@ -51,6 +51,8 @@
  *          watchdog reset, and reject invalid legacy resume records.
  *   2.6.4  Fix: flash-only recovery reruns the recorded suite because its
  *          journal entry precedes the interrupted frequency attempt.
+ *   2.6.5  Flash recovery ends the recorded hung suite and advances to the
+ *          next one, avoiding repeated hangs after physical reinsertion.
  */
 #ifndef BENCH_VERSION_H
 #define BENCH_VERSION_H
@@ -62,7 +64,7 @@
 #define BENCH_VERSION_MAJOR  2
 #define BENCH_VERSION_MINOR  6
 #define BENCH_VERSION_PATCH  3
-#define BENCH_VERSION_STRING "2.6.4"
+#define BENCH_VERSION_STRING "2.6.5"
 
 /* Pinned commits of the vendored libraries, for reproducing a result later. */
 #define LIB_MICROECC_COMMIT   "541b3a780264"

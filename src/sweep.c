@@ -1266,10 +1266,9 @@ int main(void)
         }
     } else if (have_journal && journal_ok && !g_prog.complete &&
                g_prog.suite < MAX_SUITES) {
-        /* Survived a power cycle. Suites below the recorded one are known to
-         * have run, but the record is written before its frequency attempt, so
-         * the recorded suite itself is not known complete. Restart that suite
-         * from its first rung rather than silently skipping unfinished work. */
+        /* Survived a power cycle after a hang. The record identifies the suite
+         * and frequency that were active, so end that suite there and continue
+         * with the next one instead of repeating the same unstable work. */
         printf("\n *** Unfinished sweep found in flash.\n");
         printf("     stopped in suite %d (%s) at %u MHz\n",
                g_prog.suite + 1, k_suites[g_prog.suite].name, g_prog.cur_mhz);
@@ -1282,7 +1281,7 @@ int main(void)
         printf("\n");
 
         static const char *const res_opts[] = {
-            "resume: rerun the recorded suite from its beginning, then continue",
+            "resume: end the recorded suite at that step, continue with the next",
             "start over: discard the saved run and ask again",
         };
         if (prompt_choice("Unfinished run:", res_opts, 2, 0) == 0) {
@@ -1297,7 +1296,7 @@ int main(void)
             g_rxd_force = g_prog.rxd_force;
             for (int i = 0; i < MAX_SUITES && i < PROGRESS_MAX_SUITES; i++)
                 g_result[i] = g_prog.result[i];
-            printf("\n Resuming at suite %d.\n", hung_suite + 1);
+            printf("\n Resuming after suite %d.\n", hung_suite + 1);
             fflush(stdout);
         } else {
             progress_erase();
@@ -1406,10 +1405,9 @@ int main(void)
            (unsigned long)ref_flash_crc, (unsigned long)(FLASH_CRC_BYTES / 1024));
     fflush(stdout);
 
-    /* A matching watchdog record identifies a genuinely hung suite, so move
-     * past it. A flash-only record identifies an interrupted attempt, so rerun
-     * that suite: it may not have finished the recorded frequency. */
-    int first = resuming ? hung_suite + 1 : (resuming_flash ? hung_suite : 0);
+    /* Both reset paths identify the suite that hung. Move past it so an
+     * unstable frequency does not produce an endless reset/reinsert loop. */
+    int first = (resuming || resuming_flash) ? hung_suite + 1 : 0;
     for (int i = first; i < MAX_SUITES; i++) run_suite(i, max_mhz * 1000u);
 
     printf("\n=====================================================================\n");

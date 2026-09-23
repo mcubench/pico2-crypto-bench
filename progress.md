@@ -150,3 +150,19 @@
 - Commit: `this commit (see Git history)`
 - Artifacts/logs: user-supplied serial log at attachment path; build outputs
   under ignored `build/`.
+
+## 2026-09-23 — Advance past hung suite after reinsertion
+
+- Step/experiment: `skip-recorded-hang`
+- Change: Updated flash recovery to end the suite recorded at the hang and
+  continue with the following suite, preventing reinsertion from repeating the
+  same unstable frequency. Updated prompt text and bumped firmware to v2.6.5.
+- Validation: `git diff --check`, `./tools/build arm`, and
+  `./tools/build riscv` passed with warnings treated as errors.
+- Result: Both matching-watchdog and flash-journal recovery now advance exactly
+  one suite past the recorded hang.
+- Decision: Prepare source-matched ARM and RISC-V UF2 files for the user's
+  manual hardware check; do not flash the attached device.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: build outputs under ignored `build/`; hardware validation
+  intentionally left to the user.
