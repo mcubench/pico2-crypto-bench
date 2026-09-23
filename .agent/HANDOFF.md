@@ -4,7 +4,8 @@
 - Current state: source fix implemented as v2.6.3. It reloads matching journal
   configuration on watchdog recovery, reasserts invariant fields before later
   saves, and rejects invalid legacy records. ARM and RISC-V builds pass. The
-  normal RISC-V sweep image is flashed for the user's manual interruption test.
+  normal RISC-V sweep image from source `1edd0410f83b` is flashed for the user's
+  manual interruption test.
 - Hardware: measured by host inspection as USB VID:PID `2e8a:0009`, RP2350 CDC
   serial `/dev/serial/by-id/usb-Raspberry_Pi_Pico_E0E14525E64AF6ED-if00`.
   Boot-ROM inspection reports RP2350 revision A4, QFN60, and 2048 KiB flash;

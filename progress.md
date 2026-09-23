@@ -111,3 +111,22 @@
   `5a62777a83a4acbc5810985fb30e802004f8c80cf48829b8e555930a48f8bdb6`;
   RISC-V sweep UF2 SHA-256
   `1d687d094b1047f2041a262c2a0de8f7cb39bb5165ec712b4d20841151312241`.
+
+## 2026-09-23 — Install source-matched manual test firmware
+
+- Step/experiment: `manual-resume-image-clean`
+- Change: Rebuilt both architectures from committed source `1edd0410f83b` and
+  installed its normal RISC-V sweep firmware on the connected Pico 2.
+- Validation: `./tools/build arm`, `./tools/build riscv`, and
+  `./tools/flash riscv sweep` all passed; the flash wrapper reported embedded
+  source ID `1edd0410f83b`.
+- Result: The board is ready for a user-controlled interruption and physical
+  reinsertion test, with no automatic reboot behavior in the image.
+- Decision: Await the manual test outcome; the expected recovery settings are
+  the exact voltage, start/max frequencies, ladder, and RXDELAY mode selected
+  before interruption.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: ARM sweep UF2 SHA-256
+  `32261cd513fa36a2c6ce178029772e810a01b3a3187909b141d02bc41a5fe3bb`;
+  RISC-V sweep UF2 SHA-256
+  `354d2ecc318efd9ca936f1bcc8053eff01ae611597b4e6faa7fc02dd22d9ee1a`.
