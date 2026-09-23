@@ -166,3 +166,18 @@
 - Commit: `this commit (see Git history)`
 - Artifacts/logs: build outputs under ignored `build/`; hardware validation
   intentionally left to the user.
+
+## 2026-09-23 — Build v2.6.5 shootout images
+
+- Step/experiment: `shootout-dual-isa-build`
+- Change: Rebuilt the standalone crypto shootout firmware for ARM Cortex-M33
+  and Hazard3 RISC-V from source commit `53567221e344`.
+- Validation: `./tools/build arm` and `./tools/build riscv` both returned
+  `BUILD:PASS` with warnings treated as errors.
+- Result: Both requested shootout UF2 images are ready; no device was flashed.
+- Decision: Hand the images to the user for deployment or testing.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: ARM UF2 SHA-256
+  `4c73269b826ab2ec34d14116ad863fcb1d7ca901367126fadacd4f550f93aa11`;
+  RISC-V UF2 SHA-256
+  `96c27cf3a1817cfd0992ee27de72749377d6b3edf2aca612275c855a468f990e`.

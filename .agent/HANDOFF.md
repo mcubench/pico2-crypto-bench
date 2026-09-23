@@ -14,6 +14,8 @@
   has been run.
 - Next action: flash v2.6.5 RISC-V, run the interactive sweep, physically
   reinsert after a hang, and confirm recovery continues with the next suite.
+- Prepared artifacts: v2.6.5 `crypto_shootout.uf2` exists under both
+  `build/arm/` and `build/riscv/`; neither shootout image was flashed.
 - Durable logs: `logs/arm-shootout-20260923T171833Z.log` SHA-256
   `4352119c5073f3306ffbbe0ac7da7da66ece60f07de4c5e74bfa3f41a95ee587`;
   `logs/riscv-shootout-20260923T172102Z.log` SHA-256
