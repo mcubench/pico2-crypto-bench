@@ -89,3 +89,25 @@
 - Commit: `this commit (see Git history)`
 - Artifacts/logs: Build outputs under ignored `build/`; hardware validation not
   yet performed for this step.
+
+## 2026-09-23 — Prepare manual reinsertion test image
+
+- Step/experiment: `manual-resume-image`
+- Change: Corrected the declared flash capacity from 4 MiB to the 2048 KiB
+  reported by this board's boot ROM, placing the sweep journal in the actual
+  final sector rather than relying on address aliasing. Built and flashed the
+  normal RISC-V sweep image without an automatic-reset test seam.
+- Validation: `./tools/build arm` and `./tools/build riscv` passed with warnings
+  treated as errors; `./tools/flash riscv sweep` returned `FLASH:PASS`.
+- Result: The connected RP2350 A4/QFN60 board, ID `E0E14525E64AF6ED`, now has
+  the v2.6.3 RISC-V manual-test firmware. A controlled internal-reset experiment
+  reached the first durable journal save; physical interruption/reinsertion is
+  intentionally left to the user.
+- Decision: Use the interactive sweep at the desired 1.60 V settings, remove
+  and reinsert USB after a result has been journaled, then confirm the recovery
+  banner retains the selected voltage and frequency range before resuming.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: ARM sweep UF2 SHA-256
+  `5a62777a83a4acbc5810985fb30e802004f8c80cf48829b8e555930a48f8bdb6`;
+  RISC-V sweep UF2 SHA-256
+  `1d687d094b1047f2041a262c2a0de8f7cb39bb5165ec712b4d20841151312241`.

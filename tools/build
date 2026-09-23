@@ -18,7 +18,7 @@ source_id="$(source_identity)"
 build_dir="${PROJECT_ROOT}/build/${arch}"
 
 export PATH="$(dirname "${picotool_bin}"):${PATH}"
-printf 'CONFIG arch=%s platform=%s board=pico2 flash_bytes=4194304 source_id=%s\n' \
+printf 'CONFIG arch=%s platform=%s board=pico2 flash_bytes=2097152 source_id=%s\n' \
     "${arch}" "${platform}" "${source_id}"
 cmake_options=(
     -DCMAKE_MAKE_PROGRAM="${ninja_bin}"

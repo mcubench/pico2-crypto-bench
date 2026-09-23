@@ -4,16 +4,16 @@
 - Current state: source fix implemented as v2.6.3. It reloads matching journal
   configuration on watchdog recovery, reasserts invariant fields before later
   saves, and rejects invalid legacy records. ARM and RISC-V builds pass. The
-  previously validated RISC-V shootout image remains on the device.
+  normal RISC-V sweep image is flashed for the user's manual interruption test.
 - Hardware: measured by host inspection as USB VID:PID `2e8a:0009`, RP2350 CDC
   serial `/dev/serial/by-id/usb-Raspberry_Pi_Pico_E0E14525E64AF6ED-if00`.
-  Package/revision were not physically inspected; board identity is supplied by
-  the task and build target as Raspberry Pi Pico 2.
+  Boot-ROM inspection reports RP2350 revision A4, QFN60, and 2048 KiB flash;
+  the build now declares that measured capacity explicitly.
 - Safety: no erase, OTP, security, partition, or machine-configuration command
   has been run.
-- Next action: commit the source fix, flash the RISC-V sweep, start a stock
-  1.10 V / 150 MHz run, interrupt after a journal record exists, reboot, and
-  confirm that the unfinished-run banner retains all selected parameters.
+- Next action: run the interactive sweep with the user's desired settings,
+  physically interrupt after a journaled result, reinsert, and confirm that the
+  unfinished-run banner retains the selected voltage and frequency range.
 - Durable logs: `logs/arm-shootout-20260923T171833Z.log` SHA-256
   `4352119c5073f3306ffbbe0ac7da7da66ece60f07de4c5e74bfa3f41a95ee587`;
   `logs/riscv-shootout-20260923T172102Z.log` SHA-256

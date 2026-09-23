@@ -4,9 +4,10 @@ if (NOT PICO_BOARD)
     set(PICO_BOARD pico2)
 endif()
 
-# Raspberry Pi Pico 2 has 4 MiB of QSPI flash.  Declare this explicitly because
-# crypto_sweep journals progress in the final sector.
-set(PICO_FLASH_SIZE_BYTES 4194304)
+# This attached RP2350A/QFN60 board reports 2048 KiB through the boot ROM.
+# Declare the measured capacity explicitly because crypto_sweep journals
+# progress in the final sector and addresses beyond the die alias silently.
+set(PICO_FLASH_SIZE_BYTES 2097152)
 
 set(PICO_MBEDTLS_CONFIG_FILE "bench_mbedtls_config.h")
 
