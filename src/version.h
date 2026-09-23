@@ -55,6 +55,8 @@
  *          next one, avoiding repeated hangs after physical reinsertion.
  *   2.6.6  Dual-core sweep steps require core 1 to finish useful work and gain
  *          more than 1.05x; a stalled core 1 can no longer report PASS.
+ *   2.6.7  Watchdog recovery waits for a serial acknowledgement before the next
+ *          suite or final summary, preventing tables lost during CDC reconnect.
  */
 #ifndef BENCH_VERSION_H
 #define BENCH_VERSION_H
@@ -65,8 +67,8 @@
 
 #define BENCH_VERSION_MAJOR  2
 #define BENCH_VERSION_MINOR  6
-#define BENCH_VERSION_PATCH  6
-#define BENCH_VERSION_STRING "2.6.6"
+#define BENCH_VERSION_PATCH  7
+#define BENCH_VERSION_STRING "2.6.7"
 
 /* Pinned commits of the vendored libraries, for reproducing a result later. */
 #define LIB_MICROECC_COMMIT   "541b3a780264"

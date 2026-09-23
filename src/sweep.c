@@ -806,6 +806,33 @@ static int prompt_choice(const char *label, const char *const *opts, int n, int 
     return sel;
 }
 
+/* USB CDC can take longer to reopen on the host than the RP2350 takes to boot.
+ * Without an acknowledgement, the next suite can run entirely while the log
+ * port is detached. Repeat the prompt so a late-attaching terminal sees it,
+ * and do not produce measurements that cannot be collected. */
+static void wait_for_capture_after_watchdog(int next_suite)
+{
+    while (true) {
+        if (next_suite < MAX_SUITES) {
+            printf("\n *** Serial capture ready. Press Enter to start suite %d/%d.\n",
+                   next_suite + 1, MAX_SUITES);
+        } else {
+            printf("\n *** Serial capture ready. Press Enter to print the final summary.\n");
+        }
+        fflush(stdout);
+
+        /* Reprint every five seconds until the terminal has reopened. */
+        for (int i = 0; i < 5; i++) {
+            int c = getchar_timeout_us(1000000u);
+            if (c == '\r' || c == '\n') {
+                printf(" *** Capture acknowledged; continuing.\n");
+                fflush(stdout);
+                return;
+            }
+        }
+    }
+}
+
 /* ---- RXDELAY selection -------------------------------------------------- */
 
 /* modes */
@@ -1287,6 +1314,7 @@ int main(void)
             results_load_from_scratch();
             printf(" *** No matching valid journal; RXDELAY/ladder use safe defaults.\n");
         }
+        wait_for_capture_after_watchdog(hung_suite + 1);
     } else if (have_journal && journal_ok && !g_prog.complete &&
                g_prog.suite < MAX_SUITES) {
         /* Survived a power cycle after a hang. The record identifies the suite
@@ -1459,6 +1487,7 @@ int main(void)
            " -- that is the flash divider, not the core. gain is 1-core cyc/op\n"
            " divided by 2-core cyc/op, where 2.00 would be perfect scaling.\n");
     printf(" Dual-safe steps fail if core 1 does not finish work or gain is <=1.05x.\n");
+    printf(" Watchdog recovery waits for serial acknowledgement before more output.\n");
 
     watchdog_hw->scratch[SC_MAGIC] = 0;
     if (g_journal) {

@@ -196,3 +196,23 @@
 - Decision: Commit and prepare source-matched UF2 images without flashing.
 - Commit: `this commit (see Git history)`
 - Artifacts/logs: build outputs under ignored `build/`; no hardware log.
+
+## 2026-09-23 — Gate resumed output on serial capture
+
+- Step/experiment: `watchdog-capture-gate`
+- Change: Added a repeating serial acknowledgement gate after watchdog
+  recovery. Firmware now waits for Enter before starting the next suite, or
+  before printing the final summary when the last suite hung. Bumped firmware
+  to v2.6.7.
+- Validation: Code inspection confirmed every suite table is emitted through
+  `run_suite()` and flash-only recovery already waits at its resume prompt;
+  `git diff --check`, `./tools/build arm`, and `./tools/build riscv` passed with
+  warnings treated as errors.
+- Result: Monocypher, hardware SHA-256, Mbed TLS, p256-m, and TRNG output can no
+  longer execute entirely during a watchdog-induced USB CDC reconnect. A TRNG
+  hang on the final rung waits for capture acknowledgement before its summary.
+- Decision: Prepare source-matched UF2 files for user hardware validation; do
+  not access or flash the real device.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: build outputs under ignored `build/`; no hardware log by user
+  request.
