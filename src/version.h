@@ -53,6 +53,8 @@
  *          journal entry precedes the interrupted frequency attempt.
  *   2.6.5  Flash recovery ends the recorded hung suite and advances to the
  *          next one, avoiding repeated hangs after physical reinsertion.
+ *   2.6.6  Dual-core sweep steps require core 1 to finish useful work and gain
+ *          more than 1.05x; a stalled core 1 can no longer report PASS.
  */
 #ifndef BENCH_VERSION_H
 #define BENCH_VERSION_H
@@ -63,8 +65,8 @@
 
 #define BENCH_VERSION_MAJOR  2
 #define BENCH_VERSION_MINOR  6
-#define BENCH_VERSION_PATCH  3
-#define BENCH_VERSION_STRING "2.6.5"
+#define BENCH_VERSION_PATCH  6
+#define BENCH_VERSION_STRING "2.6.6"
 
 /* Pinned commits of the vendored libraries, for reproducing a result later. */
 #define LIB_MICROECC_COMMIT   "541b3a780264"

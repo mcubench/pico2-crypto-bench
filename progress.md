@@ -181,3 +181,18 @@
   `4c73269b826ab2ec34d14116ad863fcb1d7ca901367126fadacd4f550f93aa11`;
   RISC-V UF2 SHA-256
   `96c27cf3a1817cfd0992ee27de72749377d6b3edf2aca612275c855a468f990e`.
+
+## 2026-09-23 — Detect stalled core 1 in dual-core sweep
+
+- Step/experiment: `dual-core-liveness-gate`
+- Change: Extended dual timing to report whether core 1 completed and how many
+  operations it performed. Dual-safe steps now fail if core 1 times out, does
+  no work, produces no timing, or yields aggregate gain at or below 1.05x.
+  Bumped firmware to v2.6.6 and corrected the numeric patch version to match.
+- Validation: `git diff --check`, `./tools/build arm`, and
+  `./tools/build riscv` passed with warnings treated as errors.
+- Result: A stalled core 1 can no longer inherit core 0's valid result and print
+  PASS; hardware validation is intentionally deferred to the user.
+- Decision: Commit and prepare source-matched UF2 images without flashing.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: build outputs under ignored `build/`; no hardware log.

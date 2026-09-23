@@ -76,6 +76,7 @@
 #define WATCHDOG_MS         6000u
 #define BULK_BYTES          4096
 #define TIMED_US            120000u
+#define DUAL_MIN_GAIN_X100  105u     /* <= 1.05x means core 1 added no useful work */
 #define RAMTEST_WORDS       2048
 #define NCORES              2
 #define MAX_STEPS           160
@@ -647,7 +648,8 @@ static uint64_t time_single(void (*fn)(void), uint32_t *hit, uint32_t *acc)
  * Core 1 is launched only for the measurement window and reset immediately
  * afterwards, so it is never running while the clock or the flash timing is
  * being changed. */
-static uint64_t time_dual(void (*fn)(void), uint32_t *total_ops)
+static uint64_t time_dual(void (*fn)(void), uint32_t *total_ops,
+                          uint32_t *core1_ops, bool *core1_completed)
 {
     g_worker  = fn;
     g_ops1    = 0;
@@ -674,10 +676,14 @@ static uint64_t time_dual(void (*fn)(void), uint32_t *total_ops)
     while (!g_c1_done && absolute_time_diff_us(get_absolute_time(), bail) > 0)
         tight_loop_contents();
 
+    uint32_t c1_ops = g_ops1;
+    bool c1_completed = g_c1_done;
     multicore_reset_core1();
 
-    uint32_t tot = n0 + g_ops1;
+    uint32_t tot = n0 + c1_ops;
     if (total_ops) *total_ops = tot;
+    if (core1_ops) *core1_ops = c1_ops;
+    if (core1_completed) *core1_completed = c1_completed;
     return tot ? us / tot : 0;
 }
 
@@ -1051,11 +1057,18 @@ static void run_suite(int idx, uint32_t max_khz)
                (unsigned long)(hp / 10), (unsigned long)(hp % 10));
         fflush(stdout);
 
+        bool dual_failed = false;
+        uint32_t dual_gain = 0, dual_c1_ops = 0;
+        bool dual_c1_completed = false;
         if (s->dual_safe) {
             uint32_t tot = 0;
-            uint64_t us2  = time_dual(s->timed, &tot);
+            uint64_t us2 = time_dual(s->timed, &tot, &dual_c1_ops,
+                                     &dual_c1_completed);
             uint64_t cyc2 = us2 * mhz;
             uint32_t gain = cyc2 ? (uint32_t)((cyc1 * 100u) / cyc2) : 0;
+            dual_gain = gain;
+            dual_failed = !dual_c1_completed || !dual_c1_ops || !us2 ||
+                          gain <= DUAL_MIN_GAIN_X100;
             printf("  %8llu.%02lluk", cyc2 / 1000, (cyc2 % 1000) / 10);
             print_rate(us2);
             printf(" %u.%02ux", gain / 100, gain % 100);
@@ -1064,6 +1077,16 @@ static void run_suite(int idx, uint32_t max_khz)
         }
         fflush(stdout);
         if (use_wdog) watchdog_update();
+
+        if (dual_failed) {
+            printf("  FAIL dual (core1_done=%u core1_ops=%lu gain=%u.%02ux; need >1.05x)\n",
+                   dual_c1_completed ? 1u : 0u, (unsigned long)dual_c1_ops,
+                   dual_gain / 100, dual_gain % 100);
+            printf("\n  %lu MHz failed dual-core liveness/scaling.\n",
+                   (unsigned long)mhz);
+            fflush(stdout);
+            break;
+        }
 
         if (!s->check(err, sizeof(err))) {
             printf("  FAIL hot (%s)\n", err);
@@ -1435,6 +1458,7 @@ int main(void)
            " step, so >1.00 means the operation costs more cycles at higher clock\n"
            " -- that is the flash divider, not the core. gain is 1-core cyc/op\n"
            " divided by 2-core cyc/op, where 2.00 would be perfect scaling.\n");
+    printf(" Dual-safe steps fail if core 1 does not finish work or gain is <=1.05x.\n");
 
     watchdog_hw->scratch[SC_MAGIC] = 0;
     if (g_journal) {
