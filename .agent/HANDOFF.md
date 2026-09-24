@@ -17,8 +17,11 @@
   has been run.
 - Next action: user hardware-checks v2.6.7 and presses Enter at each repeating
   post-watchdog capture prompt; Codex must not flash unless requested.
-- Prepared artifacts: v2.6.5 `crypto_shootout.uf2` exists under both
+- Prepared artifacts: v2.6.7 `crypto_shootout.uf2` exists under both
   `build/arm/` and `build/riscv/`; neither shootout image was flashed.
+- Latest artifact check: all four sweep/shootout UF2 files were rebuilt on
+  2026-09-24 and directly inspected to contain version `2.6.7`; no image was
+  flashed.
 - Durable logs: `logs/arm-shootout-20260923T171833Z.log` SHA-256
   `4352119c5073f3306ffbbe0ac7da7da66ece60f07de4c5e74bfa3f41a95ee587`;
   `logs/riscv-shootout-20260923T172102Z.log` SHA-256

@@ -216,3 +216,21 @@
 - Commit: `this commit (see Git history)`
 - Artifacts/logs: build outputs under ignored `build/`; no hardware log by user
   request.
+
+## 2026-09-24 — Rebuild and verify all v2.6.7 UF2 images
+
+- Step/experiment: `rebuild-all-v267`
+- Change: Rebuilt sweep and shootout images for ARM Cortex-M33 and Hazard3
+  RISC-V from source `5c3273beb52e` after an older deployed image reported
+  v2.6.5.
+- Validation: `./tools/build arm` and `./tools/build riscv` passed. Direct
+  `strings` inspection of each of the four UF2 files found the embedded version
+  `2.6.7`.
+- Result: All four artifacts have fresh 2026-09-24 timestamps and verified
+  v2.6.7 identification; no hardware was accessed or flashed.
+- Decision: Use these exact artifacts rather than an earlier copied UF2.
+- Commit: `this commit (see Git history)`
+- Artifacts/logs: ARM sweep `2bbc376988beb3f47c232b9876e1701aad46908756ca06874ea13c7628abfbac`;
+  ARM shootout `212c2b45d552f20f5063e33e8fd88f43f44903ef018adc096560f1f07b570a39`;
+  RISC-V sweep `a94b47d7b730e9024928ce0a7e1053289ee61e221a6560d498c714f4eae2ba69`;
+  RISC-V shootout `b7059b9e64a8b4e710164856f04d56d719bd96d43bfe5bae8aef49348beebe13`.
