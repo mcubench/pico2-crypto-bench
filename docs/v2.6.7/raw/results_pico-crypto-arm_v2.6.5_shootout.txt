@@ -1,0 +1,104 @@
+=====================================================================
+ RP2350 crypto benchmark suite
+ firmware  : crypto_shootout v2.6.3  build 20260923-182526 (8e069b2a)
+ compiled  : Sep 23 2026 20:25:30   GCC 15.2.1 20251203
+ core      : Arm Cortex-M33
+ chip      : RP2350  chip_version 3  rom_version 4
+ board id  : E0E14525E64AF6ED
+ sdk       : 2.3.1   Mbed TLS 3.6.6 (0bebf8b8c7f0)
+ libs      : micro-ecc 541b3a780264   Monocypher 1830c06d5910   p256-m (in Mbed TLS)
+             mlkem-native 438f0da19dc3 (ML-KEM 512/768/1024, portable C)
+             mldsa-native d2149e63337e (ML-DSA 44/65/87, reduced-RAM C)
+ options   : source=1edd0410f83b NIST_OPTIM=1 MBEDTLS_ASM=1 uECC=asm(no-UMAAL) board=pico2 platform=rp2350-arm-s code=XIP-flash
+---------------------------------------------------------------------
+ clk_sys   : 150.000 MHz    clk_peri 150.000 MHz    clk_usb 48.000 MHz
+ vreg      : 1.10 V (VSEL 0x0b)
+ flash/QMI : CLKDIV 3  RXDELAY 2  -> SCK 50.000 MHz
+ VSYS      : 9.897 V   (die temp sensor unusable on this board)
+ last reset: power-on / normal
+=====================================================================
+
+ Hash 4 KiB (throughput)
+   SHA-256 Mbed TLS sw          1.387 ms     2883 KiB/s   9.56x
+   SHA-256 RP2350 hw          145.000 us    27586 KiB/s   <-- fastest
+   BLAKE2b Monocypher           1.438 ms     2781 KiB/s   9.91x
+
+ P-256 key generation
+   Mbed TLS                    43.981 ms        22.73 ops/s   1.29x
+   p256-m                      73.254 ms        13.65 ops/s   2.16x
+   micro-ecc                   33.852 ms        29.54 ops/s   <-- fastest
+
+ ECDSA P-256 sign
+   Mbed TLS                    52.135 ms        19.18 ops/s   1.38x
+   p256-m                      78.473 ms        12.74 ops/s   2.08x
+   micro-ecc                   37.631 ms        26.57 ops/s   <-- fastest
+
+ ECDSA P-256 verify
+   Mbed TLS                   184.196 ms         5.42 ops/s   4.11x
+   p256-m                     156.496 ms         6.38 ops/s   3.49x
+   micro-ecc                   44.772 ms        22.33 ops/s   <-- fastest
+
+ ECDH P-256
+   Mbed TLS                   125.168 ms         7.98 ops/s   3.70x
+   p256-m                      73.234 ms        13.65 ops/s   2.16x
+   micro-ecc                   33.793 ms        29.59 ops/s   <-- fastest
+
+ ECDSA P-384 sign
+   Mbed TLS                   127.261 ms         7.85 ops/s
+
+ ECDSA P-384 verify
+   Mbed TLS                   441.416 ms         2.26 ops/s
+
+ X25519
+   Mbed TLS                    93.175 ms        10.73 ops/s   9.54x
+   Monocypher                   9.764 ms       102.41 ops/s   <-- fastest
+
+ Ed25519 sign
+   Monocypher                   5.000 ms       200.00 ops/s
+
+ Ed25519 verify
+   Monocypher                  13.288 ms        75.25 ops/s
+
+ ML-KEM (mlkem-native, portable C, run on core 1)
+   ML-KEM-512   keygen       4.520 ms (   221.23 ops/s)
+                encap        5.085 ms (   196.65 ops/s)
+                decap        6.450 ms (   155.03 ops/s)
+                 pk  800 B   sk 1632 B   ct  768 B   ss 32 B
+   ML-KEM-768   keygen       7.219 ms (   138.52 ops/s)
+                encap        8.107 ms (   123.35 ops/s)
+                decap        9.869 ms (   101.32 ops/s)
+                 pk 1184 B   sk 2400 B   ct 1088 B   ss 32 B
+   ML-KEM-1024  keygen      11.045 ms (    90.53 ops/s)
+                encap       12.095 ms (    82.67 ops/s)
+                decap       14.534 ms (    68.80 ops/s)
+                 pk 1568 B   sk 3168 B   ct 1568 B   ss 32 B
+
+ ML-DSA (mldsa-native, reduced-RAM C, run on core 1)
+   ML-DSA-44    keygen       16.242 ms (    61.56 ops/s)  [private]
+                sign        171.182 ms (     5.84 ops/s)  [private]
+                verify       16.774 ms (    59.61 ops/s)
+                pk 1312 B   sk 2560 B   sig 2420 B
+   ML-DSA-65    keygen       27.955 ms (    35.77 ops/s)  [private]
+                sign        384.781 ms (     2.59 ops/s)  [private]
+                verify       27.641 ms (    36.17 ops/s)
+                pk 1952 B   sk 4032 B   sig 3309 B
+   ML-DSA-87    keygen       47.909 ms (    20.87 ops/s)  [private]
+                sign         64.919 ms (    15.40 ops/s)  [private]
+                verify       47.233 ms (    21.17 ops/s)
+                pk 2592 B   sk 4896 B   sig 4627 B
+
+ Random bytes (1 KiB)
+   TRNG raw (on-chip)          76.000 us    13157 KiB/s   <-- fastest
+   pico_rand PRNG             339.000 us     2949 KiB/s   4.46x
+   Mbed TLS CTR_DRBG          516.000 us     1937 KiB/s   6.78x
+
+ RSA-2048 sign (CRT)
+   Mbed TLS                   404.868 ms         2.46 ops/s
+
+ RSA-2048 verify
+   Mbed TLS                    12.000 ms        83.33 ops/s
+
+ Relative factors compare implementations of the SAME operation.
+ Groups with one row are a measurement only, not a comparison.
+
+ done.

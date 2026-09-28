@@ -1,0 +1,506 @@
+=====================================================================
+ RP2350 crypto benchmark suite
+ firmware  : crypto_sweep v2.6.5  build 20260923-185803 (8b79c903)
+ compiled  : Sep 23 2026 20:58:07   GCC 16.1.0
+ core      : RISC-V Hazard3
+ chip      : RP2350  chip_version 3  rom_version 4
+ board id  : E0E14525E64AF6ED
+ sdk       : 2.3.1   Mbed TLS 3.6.6 (0bebf8b8c7f0)
+ libs      : micro-ecc 541b3a780264   Monocypher 1830c06d5910   p256-m (in Mbed TLS)
+             mlkem-native 438f0da19dc3 (ML-KEM 512/768/1024, portable C)
+             mldsa-native d2149e63337e (ML-DSA 44/65/87, reduced-RAM C)
+ options   : source=ba5102fef17f-dirty NIST_OPTIM=1 MBEDTLS_ASM=1 uECC=C board=pico2 platform=rp2350-riscv code=XIP-flash
+---------------------------------------------------------------------
+ clk_sys   : 150.000 MHz    clk_peri 48.000 MHz    clk_usb 48.000 MHz
+ vreg      : 1.60 V (VSEL 0x13)
+ flash/QMI : CLKDIV 3  RXDELAY 2  -> SCK 50.000 MHz
+ VSYS      : 9.897 V   (die temp sensor unusable on this board)
+ last reset: WATCHDOG
+=====================================================================
+ journal   : flash sector at the end of the device, survives power loss
+ sweep     : 9 suites | SCK window 100-115 MHz | wdog 6000 ms | 1-core + 2-core
+=====================================================================
+
+ *** HUNG: suite 1 (core (ALU + SRAM)) at 570 MHz -- watchdog reset.
+ *** That suite ends there; continuing with the next one.
+ *** Voltage, range, ladder, and RXDELAY restored from flash journal.
+ Applying 1.60 V (ceiling) at 150 MHz, then capturing references...
+   setup: seeding DRBGs
+   setup: Mbed TLS keys
+   setup: p256-m keys
+   setup: micro-ecc keys
+   setup: flash CRC reference
+   setup: ML-KEM references (core 1)
+   setup: ML-DSA references (core 1)
+   setup: done
+
+ Core voltage: 1.60 V (ceiling)
+ Ladder: standard, 31 steps from 150 to 600 MHz
+ Flash RXDELAY mode: 0 (bootrom value was 2)
+  REF-STATE v2.6.5 sys=150.000MHz vreg=1.60V qmi_div=3 sck=50.000MHz rxd=2 vsys=9.897V
+ reference flash CRC32 = 0x743cfdb1 over 32 KiB
+
+---------------------------------------------------------------------------------
+ SUITE 2/9: Mbed TLS   (timed: ECDSA sign)
+---------------------------------------------------------------------------------
+  sysMHz div rxd    SCK  VSYS      1c cyc/op     1c ops/s  rel  XIPhit     2c cyc/op     2c ops/s  gain  res
+     150   2 2         75 9.89V      8282.10k       18.11 1.00x  99.7%      4047.75k       37.05 2.04x  PASS
+     200   2 2        100 9.89V      8250.60k       24.24 0.99x  99.7%      4432.00k       45.12 1.86x  PASS
+     250   3 2         83 9.89V      8673.25k       28.82 1.04x  99.7%      5625.50k       44.44 1.54x  PASS
+     300   3 2        100 9.89V      8734.50k       34.34 1.05x  99.7%      5551.50k       54.03 1.57x  PASS
+     351   4 2         87 9.89V      9184.96k       38.21 1.10x  99.7%      6109.15k       57.45 1.50x  PASS
+     400   4 2        100 9.89V      9224.00k       43.36 1.11x  99.7%      5412.00k       73.90 1.70x  PASS
+     420   4 2        105 9.89V      9156.00k       45.87 1.10x  99.7%      6100.50k       68.84 1.50x  PASS
+     440   4 2        110 9.89V      9165.20k       48.00 1.10x  99.7%      5511.88k       79.82 1.66x  PASS
+     460   4 2        115 9.89V      9184.82k       50.08 1.10x  99.7%      6009.44k       76.54 1.52x  PASS
+     480   5 2         96 9.89V      9556.32k       50.22 1.15x  99.7%      6519.84k       73.62 1.46x  PASS
+     500   5 2        100 9.89V      9628.00k       51.93 1.16x  99.7%      6325.00k       79.05 1.52x  PASS
+     504   5 2        100 9.89V      9640.00k       52.28 1.16x  99.7%      6486.48k       77.70 1.48x  PASS
+     508   5 2        101 9.89V      9600.69k       52.91 1.15x  99.7%      6488.68k       78.29 1.47x  PASS
+     512   5 2        102 9.89V      9587.20k       53.40 1.15x  99.7%      6537.72k       78.31 1.46x  PASS
+     516   5 2        103 9.89V      9614.62k       53.66 1.16x  99.7%      6553.20k       78.74 1.46x  PASS
+     520   5 2        104 9.89V      9685.00k       53.69 1.16x  99.7%      6453.72k       80.57 1.50x  PASS
+     524   5 2        104 9.89V      9649.98k       54.30 1.16x  99.7%      5859.89k       89.42 1.64x  PASS
+     528   5 2        105 9.89V      9609.60k       54.94 1.16x  99.7%      6328.60k       83.43 1.51x  PASS
+     532   5 2        106 9.89V      9619.09k       55.30 1.16x  99.7%      6296.22k       84.49 1.52x  PASS
+     534   5 2        106 9.89V      9647.77k       55.34 1.16x  99.7%      6421.35k       83.16 1.50x  PASS
+     540   5 2        108 9.89V      9653.04k       55.94 1.16x  99.7%      6406.56k       84.28 1.50x  PASS
+     546   5 2        109 9.89V      9617.24k       56.77 1.16x  99.7%      5954.67k       91.69 1.61x  PASS
+     552   5 2        110 9.89V      9652.27k       57.18 1.16x  99.7%      5868.86k       94.05 1.64x  PASS
+     558   5 2        111 9.89V      9576.95k       58.26 1.15x  99.7%
+---- Closed serial port COM8 due to disconnection from the machine ----
+---- Reopened serial port COM8 ----
+
+=====================================================================
+ RP2350 crypto benchmark suite
+ firmware  : crypto_sweep v2.6.5  build 20260923-185803 (8b79c903)
+ compiled  : Sep 23 2026 20:58:07   GCC 16.1.0
+ core      : RISC-V Hazard3
+ chip      : RP2350  chip_version 3  rom_version 4
+ board id  : E0E14525E64AF6ED
+ sdk       : 2.3.1   Mbed TLS 3.6.6 (0bebf8b8c7f0)
+ libs      : micro-ecc 541b3a780264   Monocypher 1830c06d5910   p256-m (in Mbed TLS)
+             mlkem-native 438f0da19dc3 (ML-KEM 512/768/1024, portable C)
+             mldsa-native d2149e63337e (ML-DSA 44/65/87, reduced-RAM C)
+ options   : source=ba5102fef17f-dirty NIST_OPTIM=1 MBEDTLS_ASM=1 uECC=C board=pico2 platform=rp2350-riscv code=XIP-flash
+---------------------------------------------------------------------
+ clk_sys   : 150.000 MHz    clk_peri 48.000 MHz    clk_usb 48.000 MHz
+ vreg      : 1.10 V (VSEL 0x0b)
+ flash/QMI : CLKDIV 3  RXDELAY 2  -> SCK 50.000 MHz
+ VSYS      : 9.897 V   (die temp sensor unusable on this board)
+ last reset: WATCHDOG
+=====================================================================
+ journal   : flash sector at the end of the device, survives power loss
+ sweep     : 9 suites | SCK window 100-115 MHz | wdog 6000 ms | 1-core + 2-core
+=====================================================================
+
+ *** Unfinished sweep found in flash.
+     stopped in suite 3 (p256-m) at 200 MHz
+     settings: 1.60 V (ceiling), 150-600 MHz, ladder 0, RXDELAY mode 0
+     results so far:  core (ALU + SRAM)=564  Mbed TLS=552  p256-m=150  micro-ecc=0  Monocypher=0  SHA-256 hardware=0  ML-KEM 512/768/1024=0  ML-DSA 44/65/87=0  TRNG (on-chip)=0
+
+ Unfinished run:
+    1) resume: end the recorded suite at that step, continue with the next
+    2) start over: discard the saved run and ask again
+ Choose [1-2], then Enter (Enter alone = 1): 1  -> 1) resume: end the recorded suite at that step, continue with the next
+
+ Resuming after suite 3.
+ Applying 1.60 V (ceiling) at 150 MHz, then capturing references...
+   setup: seeding DRBGs
+   setup: Mbed TLS keys
+   setup: p256-m keys
+   setup: micro-ecc keys
+   setup: flash CRC reference
+   setup: ML-KEM references (core 1)
+   setup: ML-DSA references (core 1)
+   setup: done
+
+ Core voltage: 1.60 V (ceiling)
+ Ladder: standard, 31 steps from 150 to 600 MHz
+ Flash RXDELAY mode: 0 (bootrom value was 2)
+  REF-STATE v2.6.5 sys=150.000MHz vreg=1.60V qmi_div=3 sck=50.000MHz rxd=2 vsys=9.897V
+ reference flash CRC32 = 0x743cfdb1 over 32 KiB
+
+---------------------------------------------------------------------------------
+ SUITE 4/9: micro-ecc   (timed: ECDSA sign)
+---------------------------------------------------------------------------------
+  sysMHz div rxd    SCK  VSYS      1c cyc/op     1c ops/s  rel  XIPhit     2c cyc/op     2c ops/s  gain  res
+     150   2 2         75 9.89V     10470.45k       14.32 1.00x  99.9%      6116.25k       24.52 1.71x  PASS
+     200   2 2        100 9.89V     10474.00k       19.09 1.00x  99.9%      6116.60k       32.69 1.71x  PASS
+     250   3 2         83 9.89V     10468.75k       23.88 0.99x  99.9%      6116.75k       40.87 1.71x  PASS
+     300   3 2        100 9.89V     10472.70k       28.64 1.00x  99.9%      6117.60k       49.03 1.71x  PASS
+     351   4 2         87 9.89V     10473.48k       33.51 1.00x  99.9%      6116.17k       57.38 1.71x  PASS
+     400   4 2        100 9.89V     10474.80k       38.18 1.00x  99.9%      6118.80k       65.37 1.71x  PASS
+     420   4 2        105 9.89V     10474.38k       40.09 1.00x  99.9%      5562.48k       75.50 1.88x  PASS
+     440   4 2        110 9.89V     10472.44k       42.01 1.00x  99.9%      5559.84k       79.13 1.88x  PASS
+     460   4 2        115 9.89V     10473.28k       43.92 1.00x  99.9%      5560.48k       82.72 1.88x  PASS
+     480   5 2         96 9.89V     10472.16k       45.83 1.00x  99.9%      6120.00k       78.43 1.71x  PASS
+     500   5 2        100 9.89V     10474.00k       47.73 1.00x  99.9%      6116.50k       81.74 1.71x  PASS
+     504   5 2        100 9.89V     10467.07k       48.15 0.99x  99.9%      6120.07k       82.35 1.71x  PASS
+     508   5 2        101 9.89V     10472.92k       48.50 1.00x  99.9%      5561.07k       91.34 1.88x  PASS
+     512   5 2        102 9.89V     10471.93k       48.89 1.00x  99.9%      6113.79k       83.74 1.71x  PASS
+     516   5 2        103 9.89V     10473.76k       49.26 1.00x  99.9%      5647.62k       91.36 1.85x  PASS
+     520   5 2        104 9.89V     10473.84k       49.64 1.00x  99.9%      5647.20k       92.08 1.85x  PASS
+     524   5 2        104 9.89V     10471.61k       50.04 1.00x  99.9%      6117.17k       85.66 1.71x  PASS
+     528   5 2        105 9.89V     10470.24k       50.42 0.99x  99.9%      5644.32k       93.54 1.85x  PASS
+     532   5 2        106 9.89V     10474.54k       50.78 1.00x  99.9%      5646.64k       94.21 1.85x  PASS
+     534   5 2        106 9.89V     10471.20k       50.99 1.00x  99.9%      6117.50k       87.29 1.71x  PASS
+     540   5 2        108 9.89V     10472.22k       51.56 1.00x  99.9%      5647.86k       95.61 1.85x  PASS
+     546   5 2        109 9.89V     10471.18k       52.14 1.00x  99.9%      6115.74k       89.27 1.71x  PASS
+     552   5 2        110 9.89V     10473.09k       52.70 1.00x  99.9%      6114.50k       90.27 1.71x  PASS
+     558   5 2        111 9.89V     10477.00k       53.25 1.00x  99.9%      5646.96k       98.81 1.85x  PASS
+     564   5 2        112
+---- Closed serial port COM8 due to disconnection from the machine ----
+---- Reopened serial port COM8 ----
+
+=====================================================================
+ RP2350 crypto benchmark suite
+ firmware  : crypto_sweep v2.6.5  build 20260923-185803 (8b79c903)
+ compiled  : Sep 23 2026 20:58:07   GCC 16.1.0
+ core      : RISC-V Hazard3
+ chip      : RP2350  chip_version 3  rom_version 4
+ board id  : E0E14525E64AF6ED
+ sdk       : 2.3.1   Mbed TLS 3.6.6 (0bebf8b8c7f0)
+ libs      : micro-ecc 541b3a780264   Monocypher 1830c06d5910   p256-m (in Mbed TLS)
+             mlkem-native 438f0da19dc3 (ML-KEM 512/768/1024, portable C)
+             mldsa-native d2149e63337e (ML-DSA 44/65/87, reduced-RAM C)
+ options   : source=ba5102fef17f-dirty NIST_OPTIM=1 MBEDTLS_ASM=1 uECC=C board=pico2 platform=rp2350-riscv code=XIP-flash
+---------------------------------------------------------------------
+ clk_sys   : 150.000 MHz    clk_peri 48.000 MHz    clk_usb 48.000 MHz
+ vreg      : 1.60 V (VSEL 0x13)
+ flash/QMI : CLKDIV 3  RXDELAY 2  -> SCK 50.000 MHz
+ VSYS      : 9.897 V   (die temp sensor unusable on this board)
+ last reset: WATCHDOG
+=====================================================================
+ journal   : flash sector at the end of the device, survives power loss
+ sweep     : 9 suites | SCK window 100-115 MHz | wdog 6000 ms | 1-core + 2-core
+=====================================================================
+
+ *** HUNG: suite 4 (micro-ecc) at 564 MHz -- watchdog reset.
+ *** That suite ends there; continuing with the next one.
+ *** Voltage, range, ladder, and RXDELAY restored from flash journal.
+ Applying 1.60 V (ceiling) at 150 MHz, then capturing references...
+   setup: seeding DRBGs
+   setup: Mbed TLS keys
+   setup: p256-m keys
+   setup: micro-ecc keys
+   setup: flash CRC reference
+   setup: ML-KEM references (core 1)
+   setup: ML-DSA references (core 1)
+   setup: done
+
+ Core voltage: 1.60 V (ceiling)
+ Ladder: standard, 31 steps from 150 to 600 MHz
+ Flash RXDELAY mode: 0 (bootrom value was 2)
+  REF-STATE v2.6.5 sys=150.000MHz vreg=1.60V qmi_div=3 sck=50.000MHz rxd=2 vsys=9.897V
+ reference flash CRC32 = 0x743cfdb1 over 32 KiB
+
+---------------------------------------------------------------------------------
+ SUITE 5/9: Monocypher   (timed: Ed25519 sign)
+---------------------------------------------------------------------------------
+  sysMHz div rxd    SCK  VSYS      1c cyc/op     1c ops/s  rel  XIPhit     2c cyc/op     2c ops/s  gain  res
+     150   2 2         75 9.89V      1149.75k      130.46 1.00x  99.8%       606.45k      247.34 1.89x  PASS
+     200   2 2        100 9.89V      1149.80k      173.94 1.00x  99.8%       611.20k      327.22 1.88x  PASS
+     250   3 2         83 9.89V      1171.00k      213.49 1.01x  99.8%       624.50k      400.32 1.87x  PASS
+     300   3 2        100 9.89V      1170.90k      256.21 1.01x  99.8%       626.10k      479.15 1.87x  PASS
+     351   4 2         87 9.89V      1192.34k      294.37 1.03x  99.8%       637.76k      550.35 1.86x  PASS
+     400   4 2        100 9.89V      1192.80k      335.34 1.03x  99.8%       639.20k      625.78 1.86x  PASS
+     420   4 2        105 9.89V      1192.80k      352.11 1.03x  99.8%       639.24k      657.03 1.86x  PASS
+     440   4 2        110 9.89V      1192.84k      368.86 1.03x  99.8%       639.32k      688.23 1.86x  PASS
+     460   4 2        115 9.89V      1192.78k      385.65 1.03x  99.8%       639.86k      718.90 1.86x  PASS
+     480   5 2         96 9.89V      1213.92k      395.41 1.05x  99.8%       650.40k      738.00 1.86x  PASS
+     500   5 2        100 9.89V      1213.00k      412.20 1.05x  99.8%       651.50k      767.45 1.86x  PASS
+     504   5 2        100 9.89V      1213.63k      415.28 1.05x  99.8%       650.66k      774.59 1.86x  PASS
+     508   5 2        101 9.89V      1214.12k      418.41 1.05x  99.8%       650.74k      780.64 1.86x  PASS
+     512   5 2        102 9.89V      1213.95k      421.76 1.05x  99.8%       650.75k      786.78 1.86x  PASS
+     516   5 2        103 9.89V      1214.14k      424.98 1.05x  99.8%       651.19k      792.39 1.86x  PASS
+     520   5 2        104 9.89V      1213.16k      428.63 1.05x  99.8%       651.56k      798.08 1.86x  PASS
+     524   5 2        104 9.89V      1214.10k      431.59 1.05x  99.8%       651.33k      804.50 1.86x  PASS
+     528   5 2        105 9.89V      1213.34k      435.16 1.05x  99.8%       651.02k      811.03 1.86x  PASS
+     532   5 2        106 9.89V      1213.49k      438.40 1.05x  99.8%       651.16k      816.99 1.86x  PASS
+     534   5 2        106 9.89V      1213.24k      440.14 1.05x  99.8%       650.94k      820.34 1.86x  PASS
+     540   5 2        108 9.89V      1213.38k      445.03 1.05x  99.8%       651.24k      829.18 1.86x  PASS
+     546   5 2        109 9.89V      1214.30k      449.64 1.05x  99.8%       651.37k      838.22 1.86x  PASS
+     552   5 2        110 9.89V      1213.29k      454.95 1.05x  99.8%       651.36k      847.45 1.86x  PASS
+     558   5 2        111 9.89V      1213.65k      459.77 1.05x  99.8%
+---- Closed serial port COM8 due to disconnection from the machine ----
+---- Reopened serial port COM8 ----
+
+=====================================================================
+ RP2350 crypto benchmark suite
+ firmware  : crypto_sweep v2.6.5  build 20260923-185803 (8b79c903)
+ compiled  : Sep 23 2026 20:58:07   GCC 16.1.0
+ core      : RISC-V Hazard3
+ chip      : RP2350  chip_version 3  rom_version 4
+ board id  : E0E14525E64AF6ED
+ sdk       : 2.3.1   Mbed TLS 3.6.6 (0bebf8b8c7f0)
+ libs      : micro-ecc 541b3a780264   Monocypher 1830c06d5910   p256-m (in Mbed TLS)
+             mlkem-native 438f0da19dc3 (ML-KEM 512/768/1024, portable C)
+             mldsa-native d2149e63337e (ML-DSA 44/65/87, reduced-RAM C)
+ options   : source=ba5102fef17f-dirty NIST_OPTIM=1 MBEDTLS_ASM=1 uECC=C board=pico2 platform=rp2350-riscv code=XIP-flash
+---------------------------------------------------------------------
+ clk_sys   : 150.000 MHz    clk_peri 48.000 MHz    clk_usb 48.000 MHz
+ vreg      : 1.60 V (VSEL 0x13)
+ flash/QMI : CLKDIV 3  RXDELAY 2  -> SCK 50.000 MHz
+ VSYS      : 9.897 V   (die temp sensor unusable on this board)
+ last reset: WATCHDOG
+=====================================================================
+ journal   : flash sector at the end of the device, survives power loss
+ sweep     : 9 suites | SCK window 100-115 MHz | wdog 6000 ms | 1-core + 2-core
+=====================================================================
+
+ *** HUNG: suite 6 (SHA-256 hardware) at 570 MHz -- watchdog reset.
+ *** That suite ends there; continuing with the next one.
+ *** Voltage, range, ladder, and RXDELAY restored from flash journal.
+ Applying 1.60 V (ceiling) at 150 MHz, then capturing references...
+   setup: seeding DRBGs
+   setup: Mbed TLS keys
+   setup: p256-m keys
+   setup: micro-ecc keys
+   setup: flash CRC reference
+   setup: ML-KEM references (core 1)
+   setup: ML-DSA references (core 1)
+   setup: done
+
+ Core voltage: 1.60 V (ceiling)
+ Ladder: standard, 31 steps from 150 to 600 MHz
+ Flash RXDELAY mode: 0 (bootrom value was 2)
+  REF-STATE v2.6.5 sys=150.000MHz vreg=1.60V qmi_div=3 sck=50.000MHz rxd=2 vsys=9.897V
+ reference flash CRC32 = 0x743cfdb1 over 32 KiB
+
+---------------------------------------------------------------------------------
+ SUITE 7/9: ML-KEM 512/768/1024   (timed: encaps per level)
+---------------------------------------------------------------------------------
+  sysMHz div rxd    SCK  VSYS      1c cyc/op     1c ops/s  rel  XIPhit     2c cyc/op     2c ops/s  gain  res
+     150   2 2         75 9.89V
+        ML-KEM-512   encaps      733.05k      204.62 ops/s    99.9%
+        ML-KEM-768   encaps     1206.00k      124.37 ops/s    99.9%
+        ML-KEM-1024  encaps     1826.55k       82.12 ops/s    99.9%
+             1206.00k      124.37 1.00x  99.9%     single-core             -     -  PASS
+     200   2 2        100 9.89V
+        ML-KEM-512   encaps      733.00k      272.85 ops/s    99.9%
+        ML-KEM-768   encaps     1205.80k      165.86 ops/s    99.9%
+        ML-KEM-1024  encaps     1826.20k      109.51 ops/s    99.9%
+             1205.80k      165.86 0.99x  99.9%     single-core             -     -  PASS
+     250   3 2         83 9.89V
+        ML-KEM-512   encaps      733.25k      340.94 ops/s    99.9%
+        ML-KEM-768   encaps     1208.75k      206.82 ops/s    99.9%
+        ML-KEM-1024  encaps     1827.75k      136.78 ops/s    99.9%
+             1208.75k      206.82 1.00x  99.9%     single-core             -     -  PASS
+     300   3 2        100 9.89V
+        ML-KEM-512   encaps      733.20k      409.16 ops/s    99.9%
+        ML-KEM-768   encaps     1208.70k      248.20 ops/s    99.9%
+        ML-KEM-1024  encaps     1827.60k      164.14 ops/s    99.9%
+             1208.70k      248.20 1.00x  99.9%     single-core             -     -  PASS
+     351   4 2         87 9.89V
+        ML-KEM-512   encaps      733.59k      478.46 ops/s    99.9%
+        ML-KEM-768   encaps     1212.00k      289.60 ops/s    99.9%
+        ML-KEM-1024  encaps     1829.41k      191.86 ops/s    99.9%
+             1212.00k      289.60 1.00x  99.9%     single-core             -     -  PASS
+     400   4 2        100 9.89V
+        ML-KEM-512   encaps      733.60k      545.25 ops/s    99.9%
+        ML-KEM-768   encaps     1212.00k      330.03 ops/s    99.9%
+        ML-KEM-1024  encaps     1829.20k      218.67 ops/s    99.9%
+             1212.00k      330.03 1.00x  99.9%     single-core             -     -  PASS
+     420   4 2        105 9.89V
+        ML-KEM-512   encaps      733.32k      572.73 ops/s    99.9%
+        ML-KEM-768   encaps     1211.70k      346.62 ops/s    99.9%
+        ML-KEM-1024  encaps     1829.10k      229.62 ops/s    99.9%
+             1211.70k      346.62 1.00x  99.9%     single-core             -     -  PASS
+     440   4 2        110 9.89V
+        ML-KEM-512   encaps      733.48k      599.88 ops/s    99.9%
+        ML-KEM-768   encaps     1212.20k      362.97 ops/s    99.9%
+        ML-KEM-1024  encaps     1829.08k      240.55 ops/s    99.9%
+             1212.20k      362.97 1.00x  99.9%     single-core             -     -  PASS
+     460   4 2        115 9.89V
+        ML-KEM-512   encaps      733.24k      627.35 ops/s    99.9%
+        ML-KEM-768   encaps     1212.10k      379.50 ops/s    99.9%
+        ML-KEM-1024  encaps     1828.96k      251.50 ops/s    99.9%
+             1212.10k      379.50 1.00x  99.9%     single-core             -     -  PASS
+     480   5 2         96 9.89V
+---- Closed serial port COM8 due to disconnection from the machine ----
+---- Reopened serial port COM8 ----
+
+=====================================================================
+ RP2350 crypto benchmark suite
+ firmware  : crypto_sweep v2.6.5  build 20260923-185803 (8b79c903)
+ compiled  : Sep 23 2026 20:58:07   GCC 16.1.0
+ core      : RISC-V Hazard3
+ chip      : RP2350  chip_version 3  rom_version 4
+ board id  : E0E14525E64AF6ED
+ sdk       : 2.3.1   Mbed TLS 3.6.6 (0bebf8b8c7f0)
+ libs      : micro-ecc 541b3a780264   Monocypher 1830c06d5910   p256-m (in Mbed TLS)
+             mlkem-native 438f0da19dc3 (ML-KEM 512/768/1024, portable C)
+             mldsa-native d2149e63337e (ML-DSA 44/65/87, reduced-RAM C)
+ options   : source=ba5102fef17f-dirty NIST_OPTIM=1 MBEDTLS_ASM=1 uECC=C board=pico2 platform=rp2350-riscv code=XIP-flash
+---------------------------------------------------------------------
+ clk_sys   : 150.000 MHz    clk_peri 48.000 MHz    clk_usb 48.000 MHz
+ vreg      : 1.60 V (VSEL 0x13)
+ flash/QMI : CLKDIV 3  RXDELAY 2  -> SCK 50.000 MHz
+ VSYS      : 9.897 V   (die temp sensor unusable on this board)
+ last reset: WATCHDOG
+=====================================================================
+ journal   : flash sector at the end of the device, survives power loss
+ sweep     : 9 suites | SCK window 100-115 MHz | wdog 6000 ms | 1-core + 2-core
+=====================================================================
+
+ *** HUNG: suite 7 (ML-KEM 512/768/1024) at 480 MHz -- watchdog reset.
+ *** That suite ends there; continuing with the next one.
+ *** Voltage, range, ladder, and RXDELAY restored from flash journal.
+ Applying 1.60 V (ceiling) at 150 MHz, then capturing references...
+   setup: seeding DRBGs
+   setup: Mbed TLS keys
+   setup: p256-m keys
+   setup: micro-ecc keys
+   setup: flash CRC reference
+   setup: ML-KEM references (core 1)
+   setup: ML-DSA references (core 1)
+   setup: done
+
+ Core voltage: 1.60 V (ceiling)
+ Ladder: standard, 31 steps from 150 to 600 MHz
+ Flash RXDELAY mode: 0 (bootrom value was 2)
+  REF-STATE v2.6.5 sys=150.000MHz vreg=1.60V qmi_div=3 sck=50.000MHz rxd=2 vsys=9.897V
+ reference flash CRC32 = 0x743cfdb1 over 32 KiB
+
+---------------------------------------------------------------------------------
+ SUITE 8/9: ML-DSA 44/65/87   (timed: sign per level)
+---------------------------------------------------------------------------------
+  sysMHz div rxd    SCK  VSYS      1c cyc/op     1c ops/s  rel  XIPhit     2c cyc/op     2c ops/s  gain  res
+     150   2 2         75 9.89V
+        ML-DSA-44    keygen     2485.20k       60.35 ops/s   sign     3777.90k       39.70 ops/s
+        ML-DSA-65    keygen     4308.15k       34.81 ops/s   sign    11372.40k       13.18 ops/s
+        ML-DSA-87    keygen     7454.70k       20.12 ops/s   sign    17170.95k        8.73 ops/s
+            11372.40k       13.18 1.00x  99.9%     single-core             -     -  PASS
+     200   2 2        100 9.89V
+        ML-DSA-44    keygen     2485.00k       80.48 ops/s   sign     3777.00k       52.95 ops/s
+        ML-DSA-65    keygen     4308.00k       46.42 ops/s   sign    11373.00k       17.58 ops/s
+        ML-DSA-87    keygen     7455.00k       26.82 ops/s   sign    17172.40k       11.64 ops/s
+            11373.00k       17.58 1.00x  99.9%     single-core             -     -  PASS
+     250   3 2         83 9.89V
+        ML-DSA-44    keygen     2493.25k      100.27 ops/s   sign     3790.25k       65.95 ops/s
+        ML-DSA-65    keygen     4319.25k       57.88 ops/s   sign    11390.50k       21.94 ops/s
+        ML-DSA-87    keygen     7501.00k       33.32 ops/s   sign    17227.00k       14.51 ops/s
+            11390.50k       21.94 1.00x  99.9%     single-core             -     -  PASS
+     300   3 2        100 9.89V
+        ML-DSA-44    keygen     2492.40k      120.36 ops/s   sign     3791.10k       79.13 ops/s
+        ML-DSA-65    keygen     4318.80k       69.46 ops/s   sign    11392.20k       26.33 ops/s
+        ML-DSA-87    keygen     7499.10k       40.00 ops/s   sign    17224.20k       17.41 ops/s
+            11392.20k       26.33 1.00x  99.9%     single-core             -     -  PASS
+     351   4 2         87 9.89V
+        ML-DSA-44    keygen     2499.82k      140.40 ops/s   sign     3803.08k       92.29 ops/s
+        ML-DSA-65    keygen     4328.88k       81.08 ops/s   sign    11408.55k       30.76 ops/s
+        ML-DSA-87    keygen     7546.50k       46.51 ops/s   sign    17279.02k       20.31 ops/s
+            11408.55k       30.76 1.00x  99.9%     single-core             -     -  PASS
+     400   4 2        100 9.89V
+        ML-DSA-44    keygen     2500.00k      160.00 ops/s   sign     3804.40k      105.14 ops/s
+        ML-DSA-65    keygen     4329.20k       92.39 ops/s   sign    11410.40k       35.05 ops/s
+        ML-DSA-87    keygen     7545.60k       53.01 ops/s   sign    17274.80k       23.15 ops/s
+            11410.40k       35.05 1.00x  99.9%     single-core             -     -  PASS
+     420   4 2        105 9.89V
+        ML-DSA-44    keygen     2500.26k      167.98 ops/s   sign     3804.78k      110.38 ops/s
+        ML-DSA-65    keygen     4329.36k       97.01 ops/s   sign    11408.46k       36.81 ops/s
+        ML-DSA-87    keygen     7545.72k       55.66 ops/s   sign    17283.00k       24.30 ops/s
+            11408.46k       36.81 1.00x  99.9%     single-core             -     -  PASS
+     440   4 2        110 9.89V
+        ML-DSA-44    keygen     2500.08k      175.99 ops/s   sign     3802.92k      115.70 ops/s
+        ML-DSA-65    keygen     4330.04k      101.61 ops/s   sign    11412.28k       38.55 ops/s
+        ML-DSA-87    keygen     7547.76k       58.29 ops/s   sign    17281.00k       25.46 ops/s
+            11412.28k       38.55 1.00x  99.9%     single-core             -     -  PASS
+     460   4 2        115 9.89V
+        ML-DSA-44    keygen     2499.64k      184.02 ops/s   sign     3803.74k      120.93 ops/s
+        ML-DSA-65    keygen     4328.60k      106.26 ops/s   sign    11408.92k       40.31 ops/s
+        ML-DSA-87    keygen     7548.60k       60.93 ops/s   sign    17282.66k       26.61 ops/s
+            11408.92k       40.31 1.00x  99.9%     single-core             -     -  PASS
+     480   5 2         96 9.89V
+        ML-DSA-44    keygen     2508.00k      191.38 ops/s   sign     3816.48k      125.77 ops/s
+        ML-DSA-65    keygen     4339.68k      110.60 ops/s   sign    11425.92k       42.00 ops/s
+        ML-DSA-87    keygen     7592.64k       63.21 ops/s   sign    17338.08k       27.68 ops/s
+            11425.92k       42.00 1.00x  99.9%     single-core             -     -  PASS
+     500   5 2        100 9.89V
+        ML-DSA-44    keygen     2507.50k      199.40 ops/s   sign     3817.00k      130.99 ops/s
+        ML-DSA-65    keygen     4338.50k      115.24 ops/s   sign    11427.50k       43.75 ops/s
+        ML-DSA-87    keygen     7592.50k       65.85 ops/s   sign    17331.00k       28.85 ops/s
+            11427.50k       43.75 1.00x  99.9%     single-core             -     -  PASS
+     504   5 2        100 9.89V
+        ML-DSA-44    keygen     2507.40k      201.00 ops/s   sign     3815.28k      132.10 ops/s
+---- Closed serial port COM8 due to disconnection from the machine ----
+---- Reopened serial port COM8 ----
+
+=====================================================================
+ RP2350 crypto benchmark suite
+ firmware  : crypto_sweep v2.6.5  build 20260923-185803 (8b79c903)
+ compiled  : Sep 23 2026 20:58:07   GCC 16.1.0
+ core      : RISC-V Hazard3
+ chip      : RP2350  chip_version 3  rom_version 4
+ board id  : E0E14525E64AF6ED
+ sdk       : 2.3.1   Mbed TLS 3.6.6 (0bebf8b8c7f0)
+ libs      : micro-ecc 541b3a780264   Monocypher 1830c06d5910   p256-m (in Mbed TLS)
+             mlkem-native 438f0da19dc3 (ML-KEM 512/768/1024, portable C)
+             mldsa-native d2149e63337e (ML-DSA 44/65/87, reduced-RAM C)
+ options   : source=ba5102fef17f-dirty NIST_OPTIM=1 MBEDTLS_ASM=1 uECC=C board=pico2 platform=rp2350-riscv code=XIP-flash
+---------------------------------------------------------------------
+ clk_sys   : 150.000 MHz    clk_peri 48.000 MHz    clk_usb 48.000 MHz
+ vreg      : 1.10 V (VSEL 0x0b)
+ flash/QMI : CLKDIV 3  RXDELAY 2  -> SCK 50.000 MHz
+ VSYS      : 9.897 V   (die temp sensor unusable on this board)
+ last reset: WATCHDOG
+=====================================================================
+ journal   : flash sector at the end of the device, survives power loss
+ sweep     : 9 suites | SCK window 100-115 MHz | wdog 6000 ms | 1-core + 2-core
+=====================================================================
+
+ *** Unfinished sweep found in flash.
+     stopped in suite 9 (TRNG (on-chip)) at 570 MHz
+     settings: 1.60 V (ceiling), 150-600 MHz, ladder 0, RXDELAY mode 0
+     results so far:  core (ALU + SRAM)=564  Mbed TLS=552  p256-m=150  micro-ecc=558  Monocypher=552  SHA-256 hardware=564  ML-KEM 512/768/1024=460  ML-DSA 44/65/87=500  TRNG (on-chip)=564
+
+ Unfinished run:
+    1) resume: end the recorded suite at that step, continue with the next
+    2) start over: discard the saved run and ask again
+ Choose [1-2], then Enter (Enter alone = 1): 1  -> 1) resume: end the recorded suite at that step, continue with the next
+
+ Resuming after suite 9.
+ Applying 1.60 V (ceiling) at 150 MHz, then capturing references...
+   setup: seeding DRBGs
+   setup: Mbed TLS keys
+   setup: p256-m keys
+   setup: micro-ecc keys
+   setup: flash CRC reference
+   setup: ML-KEM references (core 1)
+   setup: ML-DSA references (core 1)
+   setup: done
+
+ Core voltage: 1.60 V (ceiling)
+ Ladder: standard, 31 steps from 150 to 600 MHz
+ Flash RXDELAY mode: 0 (bootrom value was 2)
+  REF-STATE v2.6.5 sys=150.000MHz vreg=1.60V qmi_div=3 sck=50.000MHz rxd=2 vsys=9.897V
+ reference flash CRC32 = 0x743cfdb1 over 32 KiB
+
+=====================================================================
+ SUMMARY -- 1.60 V (ceiling), 150-600 MHz, firmware v2.6.5
+=====================================================================
+   suite                   highest passing
+   core (ALU + SRAM)       564 MHz
+   Mbed TLS                552 MHz
+   p256-m                  150 MHz
+   micro-ecc               558 MHz
+   Monocypher              552 MHz
+   SHA-256 hardware        564 MHz
+   ML-KEM 512/768/1024     460 MHz
+   ML-DSA 44/65/87         500 MHz
+   TRNG (on-chip)          564 MHz
+
+ A suite reading exactly 600 MHz hit the cap, not a limit.
+ SHA-256 hardware has one engine, and ML-KEM needs a 48 KiB stack on
+ core 1, so neither has a dual-core figure.
+ Below 150 MHz the flash SCK window is unreachable at any divider, so
+ the divider sits at its floor of 2 and no * marker is shown.
+ ML-KEM and ML-DSA report each parameter set separately; their rel
+ columns follow the 768 and 65 rows. ML-DSA shows the two private-key
+ operations, deterministic key generation and signing.
+ cyc/op is in thousands of cycles. rel is against this suite's first
+ step, so >1.00 means the operation costs more cycles at higher clock
+ -- that is the flash divider, not the core. gain is 1-core cyc/op
+ divided by 2-core cyc/op, where 2.00 would be perfect scaling.
+ Run marked complete in flash; the next boot will start fresh.
