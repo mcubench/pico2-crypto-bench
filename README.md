@@ -4,6 +4,9 @@ Benchmarks classical and post-quantum cryptography on the Raspberry Pi RP2350 �
 on **both** of its CPU architectures, across a **19× clock range**, with
 **byte-exact stability validation** at every step.
 
+The complete results measured on Feitian PICO2_G9_QE09_v1.0 RP2350 token are available in [`docs/v2.6.7`](/docs/v2.6.7/RESULTS-v2.6.7.md) folder.
+
+
 > [!WARNING]
 > This project is experimental with source code mostly created by Opus 5 model. 
 > However, the crypto code is taken from existing cryptographic libraries, the results were 
@@ -17,6 +20,17 @@ identical peripherals, and an identical compiler version. This project does
 that, and then keeps going - into overclocking, undervolting, dual-core
 scaling, flash timing, and post-quantum schemes.
 
+---
+
+## Speed of every operation at 150 MHz (shootout v2.6.7, Feitian PICO2_G9_QE09_v1.0 RP2350)
+
+(See all results [`docs/v2.6.7`](/docs/v2.6.7/RESULTS-v2.6.7.md) folder)
+
+![Speed overview](docs/v2.6.7/svg/v263_speed_overview.svg)
+
+Time per operation, operations per second, and the ratio (Hazard3 time / M33
+time; above 1 means the M33 is faster). ★ marks the fastest library for that
+operation on that core.
 
 
 ---
